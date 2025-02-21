@@ -13,6 +13,7 @@ type QueryOptions struct {
 	Max     int
 	Offset  int
 	Filters squirrel.Sqlizer
+	Seed    string // for random sorting
 }
 
 type ResourceRepository interface {
@@ -20,11 +21,13 @@ type ResourceRepository interface {
 }
 
 type DataStore interface {
+	Library(ctx context.Context) LibraryRepository
+	Folder(ctx context.Context) FolderRepository
 	Album(ctx context.Context) AlbumRepository
 	Artist(ctx context.Context) ArtistRepository
 	MediaFile(ctx context.Context) MediaFileRepository
-	MediaFolder(ctx context.Context) MediaFolderRepository
 	Genre(ctx context.Context) GenreRepository
+	Tag(ctx context.Context) TagRepository
 	Playlist(ctx context.Context) PlaylistRepository
 	PlayQueue(ctx context.Context) PlayQueueRepository
 	Transcoding(ctx context.Context) TranscodingRepository
@@ -39,5 +42,5 @@ type DataStore interface {
 	Resource(ctx context.Context, model interface{}) ResourceRepository
 
 	WithTx(func(tx DataStore) error) error
-	GC(ctx context.Context, rootFolder string) error
+	GC(ctx context.Context) error
 }
